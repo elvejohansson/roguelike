@@ -1,0 +1,28 @@
+include_guard(GLOBAL)
+
+if (ENABLE_ASAN OR ENABLE_UBSAN OR ENABLE_TSAN)
+    if (MSVC)
+        message(WARNING "Sanitizers are not fully handled here for MSVC. Consider clang-cl or MSVC ASan specifics.")
+    endif()
+
+    if (ENABLE_TSAN AND (ENABLE_ASAN OR ENABLE_UBSAN))
+        message(FATAL_ERROR "TSan cannot be combined with ASan/UBSan in a single build.")
+    endif()
+
+    if (NOT MSVC)
+        set(_san "")
+        if (ENABLE_ASAN)
+            list(APPEND _san address)
+        endif()
+        if (ENABLE_UBSAN)
+            list(APPEND _san undefined)
+        endif()
+        if (ENABLE_TSAN)
+            list(APPEND _san thread)
+        endif()
+
+        list(JOIN _san "," _san_csv)
+        target_compile_options(project_options INTERFACE -fsanitize=${_san_csv} -fno-omit-frame-pointer)
+        target_link_options(project_options INTERFACE -fsanitize=${_san_csv})
+    endif()
+endif()

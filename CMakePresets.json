@@ -1,0 +1,57 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "BUILD_TESTS": "ON",
+        "ENABLE_WARNINGS": "ON",
+        "WARNINGS_AS_ERRORS": "OFF"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "WARNINGS_AS_ERRORS": "ON"
+      }
+    },
+    {
+      "name": "reldeb",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": "OFF"
+      }
+    },
+
+    {
+      "name": "asan",
+      "inherits": "debug",
+      "cacheVariables": {
+        "ENABLE_ASAN": "ON",
+        "ENABLE_UBSAN": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "debug",   "configurePreset": "debug" },
+    { "name": "reldeb",  "configurePreset": "reldeb" },
+    { "name": "release", "configurePreset": "release" },
+    { "name": "asan",    "configurePreset": "asan" }
+  ],
+  "testPresets": [
+    { "name": "all",  "configurePreset": "debug" },
+    { "name": "unit", "configurePreset": "debug", "execution": { "filter": { "includeLabel": "unit" } } }
+  ]
+}
