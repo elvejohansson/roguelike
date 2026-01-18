@@ -1,6 +1,7 @@
-#include <cstdio>
+#include "core/assert.h"
+#include "core/logger.h"
 
 int main(void) {
-    printf("Hello World!\n");
-    return 0;
+    Log(LogLevel::DEBUG, "Started program.");
+    ASSERT(true);
 }

@@ -1,4 +1,5 @@
 add_executable(Game
+    core/logger.cpp
     main.cpp
 )
 
