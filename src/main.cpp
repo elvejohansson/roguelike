@@ -12,17 +12,14 @@ static void errorCallback(int error, const char *description) {
     Log(LogLevel::ERROR, description);
 }
 
-static void keyCallback(GLFWwindow *window, int key, int scancode, int action,
-                        int mods) {
+static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
     Log(LogLevel::DEBUG,
-        std::format("[GLFW] Window was resized, got new dimensions {}x{}",
-                    width, height)
-            .c_str());
+        std::format("[GLFW] Window was resized, got new dimensions {}x{}", width, height).c_str());
     glViewport(0, 0, width, height);
 }
 
@@ -61,10 +58,9 @@ int main(void) {
         return -1;
     }
 
-    Log(LogLevel::INFO,
-        std::format("[GL] Loaded OpenGL version {}.{}",
-                    GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version))
-            .c_str());
+    Log(LogLevel::INFO, std::format("[GL] Loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(version),
+                                    GLAD_VERSION_MINOR(version))
+                            .c_str());
 
     unsigned int shaderProgram = initGraphics();
 

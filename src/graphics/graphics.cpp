@@ -35,9 +35,7 @@ unsigned int initGraphics() {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        Log(LogLevel::FATAL,
-            std::format("Vertex shader compilation failed: {}", infoLog)
-                .c_str());
+        Log(LogLevel::FATAL, std::format("Vertex shader compilation failed: {}", infoLog).c_str());
     }
 
     const char *fragmentShaderSource = R"(
@@ -57,8 +55,7 @@ unsigned int initGraphics() {
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
         Log(LogLevel::FATAL,
-            std::format("Fragment shader compilation failed: {}", infoLog)
-                .c_str());
+            std::format("Fragment shader compilation failed: {}", infoLog).c_str());
     }
 
     unsigned int shaderProgram = glCreateProgram();
@@ -69,8 +66,7 @@ unsigned int initGraphics() {
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        Log(LogLevel::FATAL,
-            std::format("Failed to link shader program: {}", infoLog).c_str());
+        Log(LogLevel::FATAL, std::format("Failed to link shader program: {}", infoLog).c_str());
     }
 
     glDeleteShader(vertexShader);
@@ -96,7 +92,6 @@ float toRadians(const float degrees) {
 
 void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
                   unsigned int shaderProgram, const MeshRegistry &registry) {
-
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -106,8 +101,7 @@ void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
     glfwGetFramebufferSize(window, &w, &h);
     glViewport(0, 0, w, h);
 
-    Mat4 proj =
-        mat4_perspective(toRadians(60.0f), (float)w / (float)h, 0.1f, 100.0f);
+    Mat4 proj = mat4_perspective(toRadians(60.0f), (float)w / (float)h, 0.1f, 100.0f);
     Mat4 view = mat4_lookAt({3, 3, 5}, {0, 0, 0}, {0, 1, 0});
     Mat4 viewProj = proj * view;
 
@@ -120,8 +114,7 @@ void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
         Mesh m = registry.get(e->mesh);
         glBindVertexArray(m.VAO);
         if (m.indexCount > 0) {
-            glDrawElements(GL_TRIANGLES, (GLsizei)m.indexCount, GL_UNSIGNED_INT,
-                           (void *)0);
+            glDrawElements(GL_TRIANGLES, (GLsizei)m.indexCount, GL_UNSIGNED_INT, (void *)0);
         } else {
             glDrawArrays(GL_TRIANGLES, 0, (GLsizei)m.vertexCount);
         }

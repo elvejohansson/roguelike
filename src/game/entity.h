@@ -37,7 +37,7 @@ struct EntityManager {
 void destroyEntity(EntityManager &manager, EntityId id);
 void destroyAllEntities(EntityManager &manager);
 [[nodiscard]] Entity *getEntityById(const EntityManager &manager, EntityId id);
-[[nodiscard]] std::vector<Entity *> *
-getEntitiesByTag(const EntityManager &manager, EntityType type);
+[[nodiscard]] std::vector<Entity *> *getEntitiesByTag(const EntityManager &manager,
+                                                      EntityType type);
 
 #endif

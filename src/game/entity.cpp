@@ -62,7 +62,6 @@ Entity *getEntityById(const EntityManager &manager, EntityId id) {
     return (it == manager.entityMap.end()) ? nullptr : it->second;
 }
 
-std::vector<Entity *> *getEntitiesByTag(EntityManager &manager,
-                                        EntityType type) {
+std::vector<Entity *> *getEntitiesByTag(EntityManager &manager, EntityType type) {
     return &manager.entityTypeMap[type];
 }

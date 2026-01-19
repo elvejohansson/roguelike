@@ -41,6 +41,6 @@ const char *getColorForLogLevel(LogLevel level) {
 
 void Log(LogLevel level, const char *message) {
     // TODO: @PLATFORM_DEPENDENT
-    printf("\033[%s1m %s \033[0m %s\n", getColorForLogLevel(level),
-           getStringForLogLevel(level), message);
+    printf("\033[%s1m %s \033[0m %s\n", getColorForLogLevel(level), getStringForLogLevel(level),
+           message);
 }

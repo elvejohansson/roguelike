@@ -89,8 +89,7 @@ struct Vector3 {
     }
 
     Vector3 cross(const Vector3 &other) const noexcept {
-        return Vector3{(y * other.z) - (other.y * z),
-                       (z * other.x) - (other.z * x),
+        return Vector3{(y * other.z) - (other.y * z), (z * other.x) - (other.z * x),
                        (x * other.y) - (other.x * y)};
     }
 };
@@ -135,8 +134,7 @@ struct Vector4 {
             return Vector4{0.0f, 0.0f, 0.0f, 0.0f};
         }
         float inverseLength = 1.0f / std::sqrt(ls);
-        return Vector4{x * inverseLength, y * inverseLength, z * inverseLength,
-                       w * inverseLength};
+        return Vector4{x * inverseLength, y * inverseLength, z * inverseLength, w * inverseLength};
     }
 };
 
@@ -208,15 +206,13 @@ struct Mat2 {
     }
 
     Mat2 operator+(const Mat2 &other) const noexcept {
-        return Mat2{
-            {{entries[0][0] + other[0][0], entries[0][1] + other[0][1]},
-             {entries[1][0] + other[1][0], entries[1][1] + other[1][1]}}};
+        return Mat2{{{entries[0][0] + other[0][0], entries[0][1] + other[0][1]},
+                     {entries[1][0] + other[1][0], entries[1][1] + other[1][1]}}};
     }
 
     Mat2 operator-(const Mat2 &other) const noexcept {
-        return Mat2{
-            {{entries[0][0] - other[0][0], entries[0][1] - other[0][1]},
-             {entries[1][0] - other[1][0], entries[1][1] - other[1][1]}}};
+        return Mat2{{{entries[0][0] - other[0][0], entries[0][1] - other[0][1]},
+                     {entries[1][0] - other[1][0], entries[1][1] - other[1][1]}}};
     }
 
     Mat2 operator*(const float other) const noexcept {
@@ -228,8 +224,7 @@ struct Mat2 {
         Mat2 out{};
         for (int r = 0; r < 2; ++r) {
             for (int c = 0; c < 2; ++c) {
-                out[r][c] =
-                    entries[r][0] * other[0][c] + entries[r][1] * other[1][c];
+                out[r][c] = entries[r][0] * other[0][c] + entries[r][1] * other[1][c];
             }
         }
         return out;
@@ -241,8 +236,7 @@ struct Mat2 {
     }
 
     Mat2 transpose() const noexcept {
-        return Mat2{
-            {{entries[0][0], entries[1][0]}, {entries[0][1], entries[1][1]}}};
+        return Mat2{{{entries[0][0], entries[1][0]}, {entries[0][1], entries[1][1]}}};
     }
 };
 
@@ -266,34 +260,25 @@ struct Mat3 {
 
     Mat3 operator+(const Mat3 &other) const noexcept {
         return Mat3{{
-            {entries[0][0] + other[0][0], entries[0][1] + other[0][1],
-             entries[0][2] + other[0][2]},
-            {entries[1][0] + other[1][0], entries[1][1] + other[1][1],
-             entries[1][2] + other[1][2]},
-            {entries[2][0] + other[2][0], entries[2][1] + other[2][1],
-             entries[2][2] + other[2][2]},
+            {entries[0][0] + other[0][0], entries[0][1] + other[0][1], entries[0][2] + other[0][2]},
+            {entries[1][0] + other[1][0], entries[1][1] + other[1][1], entries[1][2] + other[1][2]},
+            {entries[2][0] + other[2][0], entries[2][1] + other[2][1], entries[2][2] + other[2][2]},
         }};
     }
 
     Mat3 operator-(const Mat3 &other) const noexcept {
         return Mat3{{
-            {entries[0][0] - other[0][0], entries[0][1] - other[0][1],
-             entries[0][2] - other[0][2]},
-            {entries[1][0] - other[1][0], entries[1][1] - other[1][1],
-             entries[1][2] - other[1][2]},
-            {entries[2][0] - other[2][0], entries[2][1] - other[2][1],
-             entries[2][2] - other[2][2]},
+            {entries[0][0] - other[0][0], entries[0][1] - other[0][1], entries[0][2] - other[0][2]},
+            {entries[1][0] - other[1][0], entries[1][1] - other[1][1], entries[1][2] - other[1][2]},
+            {entries[2][0] - other[2][0], entries[2][1] - other[2][1], entries[2][2] - other[2][2]},
         }};
     }
 
     Mat3 operator*(const float other) const noexcept {
         return Mat3{{
-            {entries[0][0] * other, entries[0][1] * other,
-             entries[0][2] * other},
-            {entries[1][0] * other, entries[1][1] * other,
-             entries[1][2] * other},
-            {entries[2][0] * other, entries[2][1] * other,
-             entries[2][2] * other},
+            {entries[0][0] * other, entries[0][1] * other, entries[0][2] * other},
+            {entries[1][0] * other, entries[1][1] * other, entries[1][2] * other},
+            {entries[2][0] * other, entries[2][1] * other, entries[2][2] * other},
         }};
     }
 
@@ -301,8 +286,7 @@ struct Mat3 {
         Mat3 out{};
         for (int r = 0; r < 3; ++r) {
             for (int c = 0; c < 3; ++c) {
-                out[r][c] = entries[r][0] * other[0][c] +
-                            entries[r][1] * other[1][c] +
+                out[r][c] = entries[r][0] * other[0][c] + entries[r][1] * other[1][c] +
                             entries[r][2] * other[2][c];
             }
         }
@@ -310,10 +294,9 @@ struct Mat3 {
     }
 
     Vector3 operator*(const Vector3 &v) const noexcept {
-        return Vector3{
-            entries[0][0] * v.x + entries[0][1] * v.y + entries[0][2] * v.z,
-            entries[1][0] * v.x + entries[1][1] * v.y + entries[1][2] * v.z,
-            entries[2][0] * v.x + entries[2][1] * v.y + entries[2][2] * v.z};
+        return Vector3{entries[0][0] * v.x + entries[0][1] * v.y + entries[0][2] * v.z,
+                       entries[1][0] * v.x + entries[1][1] * v.y + entries[1][2] * v.z,
+                       entries[2][0] * v.x + entries[2][1] * v.y + entries[2][2] * v.z};
     }
 
     Mat3 transpose() const noexcept {
@@ -344,40 +327,40 @@ struct Mat4 {
 
     Mat4 operator+(const Mat4 &other) const noexcept {
         return Mat4{{
-            {entries[0][0] + other[0][0], entries[0][1] + other[0][1],
-             entries[0][2] + other[0][2], entries[0][3] + other[0][3]},
-            {entries[1][0] + other[1][0], entries[1][1] + other[1][1],
-             entries[1][2] + other[1][2], entries[1][3] + other[1][3]},
-            {entries[2][0] + other[2][0], entries[2][1] + other[2][1],
-             entries[2][2] + other[2][2], entries[2][3] + other[2][3]},
-            {entries[3][0] + other[3][0], entries[3][1] + other[3][1],
-             entries[3][2] + other[3][2], entries[3][3] + other[3][3]},
+            {entries[0][0] + other[0][0], entries[0][1] + other[0][1], entries[0][2] + other[0][2],
+             entries[0][3] + other[0][3]},
+            {entries[1][0] + other[1][0], entries[1][1] + other[1][1], entries[1][2] + other[1][2],
+             entries[1][3] + other[1][3]},
+            {entries[2][0] + other[2][0], entries[2][1] + other[2][1], entries[2][2] + other[2][2],
+             entries[2][3] + other[2][3]},
+            {entries[3][0] + other[3][0], entries[3][1] + other[3][1], entries[3][2] + other[3][2],
+             entries[3][3] + other[3][3]},
         }};
     }
 
     Mat4 operator-(const Mat4 &other) const noexcept {
         return Mat4{{
-            {entries[0][0] - other[0][0], entries[0][1] - other[0][1],
-             entries[0][2] - other[0][2], entries[0][3] - other[0][3]},
-            {entries[1][0] - other[1][0], entries[1][1] - other[1][1],
-             entries[1][2] - other[1][2], entries[1][3] - other[1][3]},
-            {entries[2][0] - other[2][0], entries[2][1] - other[2][1],
-             entries[2][2] - other[2][2], entries[2][3] - other[2][3]},
-            {entries[3][0] - other[3][0], entries[3][1] - other[3][1],
-             entries[3][2] - other[3][2], entries[3][3] - other[3][3]},
+            {entries[0][0] - other[0][0], entries[0][1] - other[0][1], entries[0][2] - other[0][2],
+             entries[0][3] - other[0][3]},
+            {entries[1][0] - other[1][0], entries[1][1] - other[1][1], entries[1][2] - other[1][2],
+             entries[1][3] - other[1][3]},
+            {entries[2][0] - other[2][0], entries[2][1] - other[2][1], entries[2][2] - other[2][2],
+             entries[2][3] - other[2][3]},
+            {entries[3][0] - other[3][0], entries[3][1] - other[3][1], entries[3][2] - other[3][2],
+             entries[3][3] - other[3][3]},
         }};
     }
 
     Mat4 operator*(const float other) const noexcept {
         return Mat4{{
-            {entries[0][0] * other, entries[0][1] * other,
-             entries[0][2] * other, entries[0][3] * other},
-            {entries[1][0] * other, entries[1][1] * other,
-             entries[1][2] * other, entries[1][3] * other},
-            {entries[2][0] * other, entries[2][1] * other,
-             entries[2][2] * other, entries[2][3] * other},
-            {entries[3][0] * other, entries[3][1] * other,
-             entries[3][2] * other, entries[3][3] * other},
+            {entries[0][0] * other, entries[0][1] * other, entries[0][2] * other,
+             entries[0][3] * other},
+            {entries[1][0] * other, entries[1][1] * other, entries[1][2] * other,
+             entries[1][3] * other},
+            {entries[2][0] * other, entries[2][1] * other, entries[2][2] * other,
+             entries[2][3] * other},
+            {entries[3][0] * other, entries[3][1] * other, entries[3][2] * other,
+             entries[3][3] * other},
         }};
     }
 
@@ -385,31 +368,26 @@ struct Mat4 {
         Mat4 out{};
         for (int r = 0; r < 4; ++r) {
             for (int c = 0; c < 4; ++c) {
-                out[r][c] =
-                    entries[r][0] * other[0][c] + entries[r][1] * other[1][c] +
-                    entries[r][2] * other[2][c] + entries[r][3] * other[3][c];
+                out[r][c] = entries[r][0] * other[0][c] + entries[r][1] * other[1][c] +
+                            entries[r][2] * other[2][c] + entries[r][3] * other[3][c];
             }
         }
         return out;
     }
 
     Vector4 operator*(const Vector4 &v) const noexcept {
-        return Vector4{entries[0][0] * v.x + entries[0][1] * v.y +
-                           entries[0][2] * v.z + entries[0][3] * v.w,
-                       entries[1][0] * v.x + entries[1][1] * v.y +
-                           entries[1][2] * v.z + entries[1][3] * v.w,
-                       entries[2][0] * v.x + entries[2][1] * v.y +
-                           entries[2][2] * v.z + entries[2][3] * v.w,
-                       entries[3][0] * v.x + entries[3][1] * v.y +
-                           entries[3][2] * v.z + entries[3][3] * v.w};
+        return Vector4{
+            entries[0][0] * v.x + entries[0][1] * v.y + entries[0][2] * v.z + entries[0][3] * v.w,
+            entries[1][0] * v.x + entries[1][1] * v.y + entries[1][2] * v.z + entries[1][3] * v.w,
+            entries[2][0] * v.x + entries[2][1] * v.y + entries[2][2] * v.z + entries[2][3] * v.w,
+            entries[3][0] * v.x + entries[3][1] * v.y + entries[3][2] * v.z + entries[3][3] * v.w};
     }
 
     Mat4 transpose() const noexcept {
-        return Mat4{
-            {{entries[0][0], entries[1][0], entries[2][0], entries[3][0]},
-             {entries[0][1], entries[1][1], entries[2][1], entries[3][1]},
-             {entries[0][2], entries[1][2], entries[2][2], entries[3][2]},
-             {entries[0][3], entries[1][3], entries[2][3], entries[3][3]}}};
+        return Mat4{{{entries[0][0], entries[1][0], entries[2][0], entries[3][0]},
+                     {entries[0][1], entries[1][1], entries[2][1], entries[3][1]},
+                     {entries[0][2], entries[1][2], entries[2][2], entries[3][2]},
+                     {entries[0][3], entries[1][3], entries[2][3], entries[3][3]}}};
     }
 };
 
@@ -438,8 +416,8 @@ struct Mat4 {
     return m;
 }
 
-[[nodiscard]] inline Mat4 mat4_perspective(float fovY_radians, float aspect,
-                                           float zNear, float zFar) {
+[[nodiscard]] inline Mat4 mat4_perspective(float fovY_radians, float aspect, float zNear,
+                                           float zFar) {
     float f = 1.0f / tanf(fovY_radians * 0.5f);
 
     Mat4 m{};

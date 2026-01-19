@@ -33,7 +33,7 @@ struct Vertex {
 };
 
 Mesh makeMesh(const Vertex *vertices, unsigned int vertexCount);
-Mesh makeMesh(const Vertex *vertices, unsigned int vertexCount,
-              const unsigned int *indices, unsigned int indexCount);
+Mesh makeMesh(const Vertex *vertices, unsigned int vertexCount, const unsigned int *indices,
+              unsigned int indexCount);
 
 #endif
