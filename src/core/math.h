@@ -28,7 +28,7 @@ struct Vector2 {
         return Vector2{-x, -y};
     }
 
-    float magnitude() const noexcept {
+    float length() const noexcept {
         return std::sqrt((x * x) + (y * y));
     }
 
@@ -71,7 +71,7 @@ struct Vector3 {
         return Vector3{-x, -y, -z};
     }
 
-    float magnitude() const noexcept {
+    float length() const noexcept {
         return std::sqrt((x * x) + (y * y) + (z * z));
     }
 
@@ -121,7 +121,7 @@ struct Vector4 {
         return Vector4{-x, -y, -z, -w};
     }
 
-    float magnitude() const noexcept {
+    float length() const noexcept {
         return std::sqrt((x * x) + (y * y) + (z * z) + (w * w));
     }
 
@@ -420,6 +420,58 @@ struct Mat4 {
         {0, 0, 1, 0},
         {0, 0, 0, 1},
     }};
+}
+
+[[nodiscard]] inline Mat4 mat4_translate(Vector3 t) {
+    Mat4 m = mat4_identity();
+    m[0][3] = t.x;
+    m[1][3] = t.y;
+    m[2][3] = t.z;
+    return m;
+}
+
+[[nodiscard]] inline Mat4 mat4_scale(Vector3 s) {
+    Mat4 m = mat4_identity();
+    m[0][0] = s.x;
+    m[1][1] = s.y;
+    m[2][2] = s.z;
+    return m;
+}
+
+[[nodiscard]] inline Mat4 mat4_perspective(float fovY_radians, float aspect,
+                                           float zNear, float zFar) {
+    float f = 1.0f / tanf(fovY_radians * 0.5f);
+
+    Mat4 m{};
+    m[0][0] = f / aspect;
+    m[1][1] = f;
+    m[2][2] = (zFar + zNear) / (zNear - zFar);
+    m[2][3] = (2.0f * zFar * zNear) / (zNear - zFar);
+    m[3][2] = -1.0f;
+    return m;
+}
+
+[[nodiscard]] inline Mat4 mat4_lookAt(Vector3 eye, Vector3 center, Vector3 up) {
+    Vector3 f = (center - eye).normalized();
+    Vector3 s = f.cross(up).normalized();
+    Vector3 u = s.cross(f);
+
+    Mat4 m = mat4_identity();
+    m[0][0] = s.x;
+    m[0][1] = s.y;
+    m[0][2] = s.z;
+    m[1][0] = u.x;
+    m[1][1] = u.y;
+    m[1][2] = u.z;
+    m[2][0] = -f.x;
+    m[2][1] = -f.y;
+    m[2][2] = -f.z;
+
+    m[0][3] = -s.dot(eye);
+    m[1][3] = -u.dot(eye);
+    m[2][3] = f.dot(eye);
+
+    return m;
 }
 
 [[nodiscard]] std::string mat_str(Mat2 mat);
