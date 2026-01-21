@@ -1,4 +1,5 @@
 #include <format>
+#include <fstream>
 
 #include "core/assert.h"
 #include "core/logger.h"
@@ -66,54 +67,21 @@ int main(void) {
 
     MeshRegistry registry;
 
-    Vertex cubeVerts[] = {
-        // +Z (front)
-        {-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0},
-        {0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 0},
-        {0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 1},
-        {-0.5f, 0.5f, 0.5f, 0, 0, 1, 0, 1},
+    std::ifstream file("../resources/cube.obj");
+    if (!file.is_open()) {
+        Log(LogLevel::FATAL, "File could not be opened");
+        return -1;
+    }
 
-        // -Z (back)
-        {0.5f, -0.5f, -0.5f, 0, 0, -1, 0, 0},
-        {-0.5f, -0.5f, -0.5f, 0, 0, -1, 1, 0},
-        {-0.5f, 0.5f, -0.5f, 0, 0, -1, 1, 1},
-        {0.5f, 0.5f, -0.5f, 0, 0, -1, 0, 1},
+    std::string contents;
+    std::string line;
+    while (getline(file, line)) {
+        contents += line + '\n';
+    }
 
-        // +X (right)
-        {0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 0},
-        {0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0},
-        {0.5f, 0.5f, -0.5f, 1, 0, 0, 1, 1},
-        {0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1},
+    file.close();
 
-        // -X (left)
-        {-0.5f, -0.5f, -0.5f, -1, 0, 0, 0, 0},
-        {-0.5f, -0.5f, 0.5f, -1, 0, 0, 1, 0},
-        {-0.5f, 0.5f, 0.5f, -1, 0, 0, 1, 1},
-        {-0.5f, 0.5f, -0.5f, -1, 0, 0, 0, 1},
-
-        // +Y (top)
-        {-0.5f, 0.5f, 0.5f, 0, 1, 0, 0, 0},
-        {0.5f, 0.5f, 0.5f, 0, 1, 0, 1, 0},
-        {0.5f, 0.5f, -0.5f, 0, 1, 0, 1, 1},
-        {-0.5f, 0.5f, -0.5f, 0, 1, 0, 0, 1},
-
-        // -Y (bottom)
-        {-0.5f, -0.5f, -0.5f, 0, -1, 0, 0, 0},
-        {0.5f, -0.5f, -0.5f, 0, -1, 0, 1, 0},
-        {0.5f, -0.5f, 0.5f, 0, -1, 0, 1, 1},
-        {-0.5f, -0.5f, 0.5f, 0, -1, 0, 0, 1},
-    };
-
-    unsigned int cubeIdx[] = {
-        0,  1,  2,  0,  2,  3,  // front
-        4,  5,  6,  4,  6,  7,  // back
-        8,  9,  10, 8,  10, 11, // right
-        12, 13, 14, 12, 14, 15, // left
-        16, 17, 18, 16, 18, 19, // top
-        20, 21, 22, 20, 22, 23  // bottom
-    };
-
-    MeshId mId = registry.add(makeMesh(cubeVerts, 24, cubeIdx, 36));
+    MeshId mId = registry.add(makeMeshFromObj(contents));
 
     EntityManager manager;
 
@@ -152,6 +120,7 @@ int main(void) {
         drawEntities(window, manager.entities, shaderProgram, registry);
     }
 
+    registry.clear();
     destroyAllEntities(manager);
 
     shutdownGraphics(shaderProgram);

@@ -111,12 +111,12 @@ void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
         Mat4 model = mat4_translate(e->position) * mat4_scale(e->scale);
         glUniformMatrix4fv(uModelLoc, 1, GL_TRUE, &model.entries[0][0]);
 
-        Mesh m = registry.get(e->mesh);
-        glBindVertexArray(m.VAO);
-        if (m.indexCount > 0) {
-            glDrawElements(GL_TRIANGLES, (GLsizei)m.indexCount, GL_UNSIGNED_INT, (void *)0);
+        Mesh *m = registry.get(e->mesh);
+        glBindVertexArray(m->VAO);
+        if (m->indexCount > 0) {
+            glDrawElements(GL_TRIANGLES, (GLsizei)m->indexCount, GL_UNSIGNED_INT, (void *)0);
         } else {
-            glDrawArrays(GL_TRIANGLES, 0, (GLsizei)m.vertexCount);
+            glDrawArrays(GL_TRIANGLES, 0, (GLsizei)m->vertexCount);
         }
     }
 
