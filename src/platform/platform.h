@@ -3,6 +3,8 @@
 
 #include "../core/logger.h"
 
+#include "input.h"
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define PLATFORM_WINDOWS
 #elif defined(__APPLE__)
@@ -35,6 +37,7 @@ struct PlatformAPI {
     void (*windowDestroy)(Platform *p);
 
     bool (*isKeyPressed)(Platform *p, int keyCode);
+    float (*getAxisValue)(Platform *p, JoystickAxis axis);
 
     void (*pumpEvents)(Platform *p);
 

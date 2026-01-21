@@ -6,6 +6,7 @@
 #include <thread>
 
 #include "../core/logger.h"
+#include "input.h"
 #include "platform.h"
 
 static void errorCallback(int error, const char *description) {
@@ -26,6 +27,22 @@ static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
 
     Log(LogLevel::DEBUG,
         std::format("[GLFW] Window was resized, got new dimensions {}x{}", width, height).c_str());
+}
+
+static void joystickCallback(int jid, int event) {
+    switch (event) {
+    case GLFW_CONNECTED: {
+        Log(LogLevel::DEBUG,
+            std::format("Joystick #{} connected ({})", jid, glfwGetGamepadName(jid)).c_str());
+        return;
+    }
+    case GLFW_DISCONNECTED: {
+        Log(LogLevel::DEBUG, std::format("Joystick #{} disconnected", jid).c_str());
+        return;
+    }
+    default:
+        return;
+    }
 }
 
 struct State {};
@@ -87,6 +104,9 @@ bool linux_windowCreate(Platform *p, const PlatformWindowConfig &config) {
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
     Log(LogLevel::DEBUG, "[GLFW] Registered framebuffer size callback");
 
+    glfwSetJoystickCallback(joystickCallback);
+    Log(LogLevel::DEBUG, "[GLFW] Registered joystick callback");
+
     glbinding::initialize(glfwGetProcAddress);
 
     return true;
@@ -113,6 +133,32 @@ bool linux_isKeyPressed(Platform *p, int keyCode) {
     GLFWwindow *window = (GLFWwindow *)pw->handle;
 
     return glfwGetKey(window, keyCode) == GLFW_PRESS;
+}
+
+float linux_getAxisValue(Platform *p, JoystickAxis axis) {
+    // incredibly inefficient and fragile, works for now
+    for (int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid) {
+        if (!glfwJoystickPresent(jid)) {
+            continue;
+        }
+
+        int count;
+        const float *axes = glfwGetJoystickAxes(jid, &count);
+
+        switch (axis) {
+        case JoystickAxis::LEFT_X:
+            return axes[0];
+        case JoystickAxis::LEFT_Y:
+            return axes[1];
+        case JoystickAxis::RIGHT_X:
+            return axes[3];
+        case JoystickAxis::RIGHT_Y:
+            return axes[4];
+        default:
+            return 0.0F;
+        }
+    }
+    return 0.0F;
 }
 
 void linux_pumpEvents(Platform *p) {
@@ -143,6 +189,7 @@ bool platformCreate_linux(Platform *out) {
     out->api.windowCreate = linux_windowCreate;
     out->api.windowDestroy = linux_windowDestroy;
     out->api.isKeyPressed = linux_isKeyPressed;
+    out->api.getAxisValue = linux_getAxisValue;
     out->api.pumpEvents = linux_pumpEvents;
 
     return true;

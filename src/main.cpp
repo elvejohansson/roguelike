@@ -7,6 +7,7 @@
 #include "game/entity.h"
 #include "graphics/graphics.h"
 #include "graphics/mesh.h"
+#include "platform/input.h"
 #include "platform/platform.h"
 
 int main(void) {
@@ -70,16 +71,19 @@ int main(void) {
 
         accumulator += frameTime;
 
-        if (platform.api.isKeyPressed(&platform, 87)) {
+        float leftX = platform.api.getAxisValue(&platform, JoystickAxis::LEFT_X);
+        float leftY = platform.api.getAxisValue(&platform, JoystickAxis::LEFT_Y);
+
+        if (platform.api.isKeyPressed(&platform, 87) || leftY <= -0.1) {
             player->position.z -= deltaTime * 1.0f;
         }
-        if (platform.api.isKeyPressed(&platform, 83)) {
+        if (platform.api.isKeyPressed(&platform, 83) || leftY >= 0.1) {
             player->position.z += deltaTime * 1.0f;
         }
-        if (platform.api.isKeyPressed(&platform, 68)) {
+        if (platform.api.isKeyPressed(&platform, 68) || leftX >= 0.1) {
             player->position.x += deltaTime * 1.0f;
         }
-        if (platform.api.isKeyPressed(&platform, 65)) {
+        if (platform.api.isKeyPressed(&platform, 65) || leftX <= -0.1) {
             player->position.x -= deltaTime * 1.0f;
         }
 
