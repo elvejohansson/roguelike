@@ -4,64 +4,22 @@
 #include "core/assert.h"
 #include "core/logger.h"
 #include "core/math.h"
-#include "defines.h"
 #include "game/entity.h"
 #include "graphics/graphics.h"
 #include "graphics/mesh.h"
-
-static void errorCallback(int error, const char *description) {
-    Log(LogLevel::ERROR, description);
-}
-
-static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
-    Log(LogLevel::DEBUG,
-        std::format("[GLFW] Window was resized, got new dimensions {}x{}", width, height).c_str());
-    glViewport(0, 0, width, height);
-}
+#include "platform/platform.h"
 
 int main(void) {
-    if (!glfwInit()) {
-        Log(LogLevel::FATAL, "Failed to initialize GLFW");
+    Platform platform;
+    if (!platformInit(&platform)) {
         return -1;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow *window = glfwCreateWindow(1280, 720, "Roguelike", NULL, NULL);
-    if (!window) {
-        Log(LogLevel::FATAL, "[GLFW] Window creation failed");
-        glfwTerminate();
+    if (!platform.api.windowCreate(&platform, {})) {
         return -1;
     }
 
-    glfwMakeContextCurrent(window);
-
-    glfwSetErrorCallback(errorCallback);
-    Log(LogLevel::DEBUG, "[GLFW] Registered error callback");
-
-    glfwSetKeyCallback(window, keyCallback);
-    Log(LogLevel::DEBUG, "[GLFW] Registered key callback");
-
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    Log(LogLevel::DEBUG, "[GLFW] Registered framebuffer size callback");
-
-    int version = gladLoadGL(glfwGetProcAddress);
-    if (version == 0) {
-        Log(LogLevel::FATAL, "[GL] Failed to initialize context");
-        glfwTerminate();
-        return -1;
-    }
-
-    Log(LogLevel::INFO, std::format("[GL] Loaded OpenGL version {}.{}", GLAD_VERSION_MAJOR(version),
-                                    GLAD_VERSION_MINOR(version))
-                            .c_str());
+    PlatformWindow *window = platform.window;
 
     unsigned int shaderProgram = initGraphics();
 
@@ -98,11 +56,11 @@ int main(void) {
     double time = 0.0;
     double deltaTime = 1.0 / 60.0; // 60HZ
 
-    double currentTime = glfwGetTime();
+    double currentTime = platform.api.getTimeSeconds(&platform);
     double accumulator = 0.0;
 
-    while (!glfwWindowShouldClose(window)) {
-        double newTime = glfwGetTime();
+    while (!window->shouldClose) {
+        double newTime = platform.api.getTimeSeconds(&platform);
         double frameTime = newTime - currentTime;
         currentTime = newTime;
 
@@ -112,16 +70,16 @@ int main(void) {
 
         accumulator += frameTime;
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        if (platform.api.isKeyPressed(&platform, 87)) {
             player->position.z -= deltaTime * 1.0f;
         }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        if (platform.api.isKeyPressed(&platform, 83)) {
             player->position.z += deltaTime * 1.0f;
         }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        if (platform.api.isKeyPressed(&platform, 68)) {
             player->position.x += deltaTime * 1.0f;
         }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        if (platform.api.isKeyPressed(&platform, 65)) {
             player->position.x -= deltaTime * 1.0f;
         }
 
@@ -135,14 +93,13 @@ int main(void) {
 
         // render(window, alpha)
 
-        drawEntities(window, manager.entities, shaderProgram, registry);
+        drawEntities(manager.entities, shaderProgram, registry, window->width, window->height);
+
+        platform.api.pumpEvents(&platform);
     }
 
     registry.clear();
     destroyAllEntities(manager);
 
     shutdownGraphics(shaderProgram);
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
 }

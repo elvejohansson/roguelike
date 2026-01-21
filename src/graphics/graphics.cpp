@@ -1,11 +1,9 @@
-#define GLAD_GL_IMPLEMENTATION
-
 #include <format>
 
 #include "../core/logger.h"
 #include "../core/math.h"
-#include "../defines.h"
 #include "../game/entity.h"
+#include "opengl.h"
 
 int uModelLoc;
 int uViewProjLoc;
@@ -90,18 +88,15 @@ float toRadians(const float degrees) {
     return degrees * (3.141592 / 180);
 }
 
-void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
-                  unsigned int shaderProgram, const MeshRegistry &registry) {
+void drawEntities(const std::vector<Entity *> &entities, unsigned int shaderProgram,
+                  const MeshRegistry &registry, int width, int height) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderProgram);
 
-    int w, h;
-    glfwGetFramebufferSize(window, &w, &h);
-    glViewport(0, 0, w, h);
-
-    Mat4 proj = mat4_perspective(toRadians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
+    glViewport(0, 0, width, height);
+    Mat4 proj = mat4_perspective(toRadians(90.0f), (float)width / (float)height, 0.1f, 100.0f);
 
     for (Entity *e : entities) {
         if (e->type == EntityType::Player) {
@@ -124,7 +119,4 @@ void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
     }
 
     glBindVertexArray(0);
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
 }

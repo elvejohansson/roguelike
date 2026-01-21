@@ -7,7 +7,7 @@
 unsigned int initGraphics();
 void shutdownGraphics(unsigned int shaderProgram);
 
-void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
-                  unsigned int shaderProgram, const MeshRegistry &registry);
+void drawEntities(const std::vector<Entity *> &entities, unsigned int shaderProgram,
+                  const MeshRegistry &registry, int width, int height);
 
 #endif

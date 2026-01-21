@@ -4,10 +4,13 @@ include(FetchContent)
 
 option(USE_SYSTEM_DEPS "Prefer system-installed dependencies" ON)
 
-# glad
-add_library(dep_glad INTERFACE)
-target_include_directories(dep_glad INTERFACE "${CMAKE_SOURCE_DIR}/vendor")
-add_library(dep::glad ALIAS dep_glad)
+# glbinding
+if(USE_SYSTEM_DEPS)
+    find_package(glbinding CONFIG REQUIRED)
+    add_library(dep::glbinding ALIAS glbinding::glbinding)
+else()
+    # fetchcontent
+endif()
 
 # glfw
 if(USE_SYSTEM_DEPS)

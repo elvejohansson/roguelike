@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "../core/logger.h"
-#include "../defines.h"
 #include "mesh.h"
+#include "opengl.h"
 
 Mesh *makeMesh(const Vertex *vertices, unsigned int vertexCount) {
     Mesh *m = new Mesh;
