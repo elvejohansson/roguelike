@@ -90,6 +90,11 @@ int main(void) {
     player->scale = Vector3{1, 1, 1};
     player->mesh = mId;
 
+    Entity *enemy = makeEntity(manager, EntityType::Enemy);
+    enemy->position = Vector3{5, 0, -5};
+    enemy->scale = Vector3{1, 1, 1};
+    enemy->mesh = mId;
+
     double time = 0.0;
     double deltaTime = 1.0 / 60.0; // 60HZ
 
@@ -106,6 +111,19 @@ int main(void) {
         }
 
         accumulator += frameTime;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            player->position.z -= deltaTime * 1.0f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            player->position.z += deltaTime * 1.0f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            player->position.x += deltaTime * 1.0f;
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            player->position.x -= deltaTime * 1.0f;
+        }
 
         while (accumulator >= deltaTime) {
             // update()

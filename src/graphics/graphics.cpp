@@ -101,13 +101,16 @@ void drawEntities(GLFWwindow *window, const std::vector<Entity *> &entities,
     glfwGetFramebufferSize(window, &w, &h);
     glViewport(0, 0, w, h);
 
-    Mat4 proj = mat4_perspective(toRadians(60.0f), (float)w / (float)h, 0.1f, 100.0f);
-    Mat4 view = mat4_lookAt({3, 3, 5}, {0, 0, 0}, {0, 1, 0});
-    Mat4 viewProj = proj * view;
-
-    glUniformMatrix4fv(uViewProjLoc, 1, GL_TRUE, &viewProj.entries[0][0]);
+    Mat4 proj = mat4_perspective(toRadians(90.0f), (float)w / (float)h, 0.1f, 100.0f);
 
     for (Entity *e : entities) {
+        if (e->type == EntityType::Player) {
+            Mat4 view =
+                mat4_lookAt(Vector3{e->position.x, 7, e->position.z + 5}, e->position, {0, 1, 0});
+            Mat4 viewProj = proj * view;
+            glUniformMatrix4fv(uViewProjLoc, 1, GL_TRUE, &viewProj.entries[0][0]);
+        }
+
         Mat4 model = mat4_translate(e->position) * mat4_scale(e->scale);
         glUniformMatrix4fv(uModelLoc, 1, GL_TRUE, &model.entries[0][0]);
 
